@@ -13,11 +13,22 @@ void game_init(Game *g) {
     init_players(g);
 }
 
-void game_inputhandler(Game *g) {
-    if (IsKeyDown(KEY_K)) g->p1.y -= GetFrameTime() * PLAYER_SPEED;
-    if (IsKeyDown(KEY_J)) g->p1.y += GetFrameTime() * PLAYER_SPEED;
-    if (IsKeyDown(KEY_D)) g->p2.y -= GetFrameTime() * PLAYER_SPEED;
-    if (IsKeyDown(KEY_F)) g->p2.y += GetFrameTime() * PLAYER_SPEED;
+void move_paddle(float *y, float delta, int direction)
+{
+    *y += direction * PLAYER_SPEED * delta;
+
+    if (*y < 0)
+        *y = 0;
+    else if (*y + PLAYER_HEIGHT > SCREEN_HEIGHT)
+        *y = SCREEN_HEIGHT - PLAYER_HEIGHT;
+}
+
+void game_inputhandler(Game *g, float delta) {
+    if (IsKeyDown(KEY_K)) move_paddle(&g->p1.y, delta, -1);
+    if (IsKeyDown(KEY_J)) move_paddle(&g->p1.y, delta,  1);
+
+    if (IsKeyDown(KEY_D)) move_paddle(&g->p2.y, delta, -1);
+    if (IsKeyDown(KEY_F)) move_paddle(&g->p2.y, delta,  1);
 }
 
 void draw_line(void) {

@@ -15,4 +15,4 @@ typedef struct {
 
 extern void game_init(Game *g);
 extern void game_draw(Game *g);
-extern void game_inputhandler(Game *g);
+extern void game_inputhandler(Game *g, float delta);

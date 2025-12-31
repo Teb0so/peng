@@ -3,7 +3,7 @@
 
 static void main_loop(Game *g) {
     while (!WindowShouldClose()) {
-        game_inputhandler(g);
+        game_inputhandler(g, GetFrameTime());
         game_draw(g);
     }
 }
