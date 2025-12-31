@@ -9,12 +9,20 @@ void init_players(Game *g) {
     g->p2.y = (float) SCREEN_HEIGHT / 2 - (float) PLAYER_HEIGHT / 2;
 }
 
-void game_init(Game *g) {
-    init_players(g);
+void init_peng(Peng *p) {
+    p->pos.x = (float) SCREEN_WIDTH / 2 - (float) PENG_SIZE / 2;
+    p->pos.y = (float) SCREEN_HEIGHT / 2 - (float) PENG_SIZE / 2;
+
+    p->speed.x = PENG_INIT_SPEED;
+    p->speed.y = PENG_INIT_SPEED;
 }
 
-void move_paddle(float *y, float delta, int direction)
-{
+void game_init(Game *g) {
+    init_players(g);
+    init_peng(&g->peng);
+}
+
+void move_paddle(float *y, float delta, int direction) {
     *y += direction * PLAYER_SPEED * delta;
 
     if (*y < 0)
@@ -23,12 +31,42 @@ void move_paddle(float *y, float delta, int direction)
         *y = SCREEN_HEIGHT - PLAYER_HEIGHT;
 }
 
+void game_movePeng(Game *g, float delta) {
+    g->peng.pos.x += g->peng.speed.x * delta;
+    g->peng.pos.y += g->peng.speed.y * delta;
+
+    if (g->peng.pos.y < 0 || g->peng.pos.y + PENG_SIZE > SCREEN_HEIGHT) {
+        g->peng.speed.y = g->peng.speed.y * - 1;
+    }
+    else if (g->peng.pos.x < 0 || g->peng.pos.x + PENG_SIZE > SCREEN_WIDTH) {
+        init_peng(&g->peng);
+    }
+    else if (g->peng.pos.x + (float)PENG_SIZE > g->p1.x ) {
+        if (g->peng.pos.y + (float)PENG_SIZE > g->p1.y && g->peng.pos.y + (float)PENG_SIZE < g->p1.y + PLAYER_HEIGHT) {
+            g->peng.speed.x = g->peng.speed.x * - 1;
+        }
+    }
+    else if (g->peng.pos.x - PLAYER_WIDTH < g->p2.x ) {
+        if (g->peng.pos.y > g->p2.y && g->peng.pos.y < g->p2.y + PLAYER_HEIGHT) {
+            g->peng.speed.x = g->peng.speed.x * - 1;
+        }
+    }
+}
+
 void game_inputhandler(Game *g, float delta) {
     if (IsKeyDown(KEY_K)) move_paddle(&g->p1.y, delta, -1);
     if (IsKeyDown(KEY_J)) move_paddle(&g->p1.y, delta,  1);
 
     if (IsKeyDown(KEY_D)) move_paddle(&g->p2.y, delta, -1);
     if (IsKeyDown(KEY_F)) move_paddle(&g->p2.y, delta,  1);
+}
+
+void draw_peng(float *x, float *y) {
+    DrawRectangle(*x,
+                  *y,
+                  PENG_SIZE,
+                  PENG_SIZE,
+                  WHITE);
 }
 
 void draw_line(void) {
@@ -53,6 +91,8 @@ void game_draw(Game *g) {
 
     DrawRectangle(g->p1.x, g->p1.y, PLAYER_WIDTH, PLAYER_HEIGHT, WHITE);
     DrawRectangle(g->p2.x, g->p2.y, PLAYER_WIDTH, PLAYER_HEIGHT, WHITE);
+
+    draw_peng(&g->peng.pos.x, &g->peng.pos.y);
 
     EndDrawing();
 }

@@ -5,6 +5,7 @@ static void main_loop(Game *g) {
     while (!WindowShouldClose()) {
         game_inputhandler(g, GetFrameTime());
         game_draw(g);
+        game_movePeng(g, GetFrameTime());
     }
 }
 
