@@ -1,6 +1,6 @@
 #include "raylib/src/raylib.h"
 
-#define PLAYER_SPEED 450.0f
+#define PLAYER_SPEED 600.0f
 #define PENG_INIT_SPEED 200.0f
 
 #define PENG_SIZE 30
@@ -16,6 +16,12 @@ enum {
     P2,
 };
 
+
+typedef struct {
+    int p1;
+    int p2;
+} Score;
+
 typedef struct {
     Vector2 pos;
     Vector2 speed;
@@ -25,6 +31,7 @@ typedef struct {
     Vector2 p1;
     Vector2 p2;
     Peng peng;
+    Score score;
     int last;
 } Game;
 

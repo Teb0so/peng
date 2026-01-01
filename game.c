@@ -32,6 +32,13 @@ void move_paddle(float *y, float delta, int direction) {
         *y = SCREEN_HEIGHT - PLAYER_HEIGHT;
 }
 
+void peng_colisionHandler(Peng *p) {
+    const int n = 50;
+    if (p->speed.x >=0 ) p->speed.x += n; else p->speed.x -= n;
+    // if (p->speed.y >=0 ) p->speed.y += n; else p->speed.y -= n;
+    p->speed.x = p->speed.x * - 1;
+}
+
 void game_movePeng(Game *g, float delta) {
     g->peng.pos.x += g->peng.speed.x * delta;
     g->peng.pos.y += g->peng.speed.y * delta;
@@ -44,24 +51,26 @@ void game_movePeng(Game *g, float delta) {
     else if (g->peng.pos.x < 0) {
         init_peng(&g->peng);
         g->last = P2;
+        g->score.p1++;
     }
     // P2 score
     else if (g->peng.pos.x + PENG_SIZE > SCREEN_WIDTH) {
         init_peng(&g->peng);
         g->last = P2;
+        g->score.p2++;
     }
     // P1 collision
     else if (g->peng.pos.x + (float)PENG_SIZE > g->p1.x && g->last == P2) {
         if (g->peng.pos.y + (float)PENG_SIZE > g->p1.y && g->peng.pos.y < g->p1.y + PLAYER_HEIGHT) {
             g->last = P1;
-            g->peng.speed.x = g->peng.speed.x * - 1;
+            peng_colisionHandler(&g->peng);
         }
     }
     // P2 collision
     else if (g->peng.pos.x - PLAYER_WIDTH < g->p2.x && g->last == P1) {
         if (g->peng.pos.y + (float)PENG_SIZE > g->p2.y && g->peng.pos.y < g->p2.y + PLAYER_HEIGHT) {
             g->last = P2;
-            g->peng.speed.x = g->peng.speed.x * - 1;
+            peng_colisionHandler(&g->peng);
         }
     }
 }
