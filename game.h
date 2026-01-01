@@ -11,6 +11,11 @@
 #define PLAYER_WIDTH 20
 #define PLAYER_HEIGHT 100
 
+enum {
+    P1,
+    P2,
+};
+
 typedef struct {
     Vector2 pos;
     Vector2 speed;
@@ -20,6 +25,7 @@ typedef struct {
     Vector2 p1;
     Vector2 p2;
     Peng peng;
+    int last;
 } Game;
 
 extern void game_init(Game *g);
