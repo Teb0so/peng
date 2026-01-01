@@ -11,18 +11,26 @@ void init_players(Game *g) {
     g->p2.y = (float) SCREEN_HEIGHT / 2 - (float) PLAYER_HEIGHT / 2;
 }
 
-void init_peng(Peng *p) {
+void init_peng(Peng *p, Score *s, int last) {
     p->pos.x = (float) SCREEN_WIDTH / 2 - (float) PENG_SIZE / 2;
-    p->pos.y = (float) SCREEN_HEIGHT / 2 - (float) PENG_SIZE / 2;
 
-    p->speed.x = PENG_INIT_SPEED;
+    if ((s->p1 + s->p2) % 2 == 0 ) 
+        p->pos.y = (float) SCREEN_HEIGHT / 4 - (float) PENG_SIZE / 2;
+    else
+        p->pos.y = (float) SCREEN_HEIGHT - (float)SCREEN_HEIGHT / 4 - (float) PENG_SIZE / 2;
+
     p->speed.y = PENG_INIT_SPEED;
+
+    if(last == P2)
+        p->speed.x = PENG_INIT_SPEED;
+    else
+        p->speed.x = PENG_INIT_SPEED * - 1;
 }
 
 void game_init(Game *g) {
-    init_players(g);
-    init_peng(&g->peng);
     g->last = P2;
+    init_players(g);
+    init_peng(&g->peng, &g->score, g->last);
 }
 
 void draw_score(Score *s) {
@@ -62,15 +70,13 @@ void game_movePeng(Game *g, float delta) {
     }
     // P2 score
     else if (g->peng.pos.x < 0) {
-        init_peng(&g->peng);
-        g->last = P2;
         g->score.p2++;
+        init_peng(&g->peng, &g->score, g->last);
     }
     // P1 score
     else if (g->peng.pos.x + PENG_SIZE > SCREEN_WIDTH) {
-        init_peng(&g->peng);
-        g->last = P2;
         g->score.p1++;
+        init_peng(&g->peng, &g->score, g->last);
     }
     // P1 collision
     else if (g->peng.pos.x + (float)PENG_SIZE > g->p1.x && g->last == P2) {
