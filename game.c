@@ -1,5 +1,6 @@
+#include <stdio.h>
+
 #include "raylib/src/raylib.h"
-#include "stdio.h"
 #include "game.h"
 
 void init_players(Game *g) {
