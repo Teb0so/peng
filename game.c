@@ -1,11 +1,12 @@
 #include "raylib/src/raylib.h"
+#include "stdio.h"
 #include "game.h"
 
 void init_players(Game *g) {
-    g->p1.x = (float) SCREEN_WIDTH - 60;
+    g->p1.x = (float) SCREEN_WIDTH - PLAYER_PADDING;
     g->p1.y = (float) SCREEN_HEIGHT / 2 - (float) PLAYER_HEIGHT / 2;
 
-    g->p2.x = (float) 60 - PLAYER_WIDTH;
+    g->p2.x = (float) PLAYER_PADDING - PLAYER_WIDTH;
     g->p2.y = (float) SCREEN_HEIGHT / 2 - (float) PLAYER_HEIGHT / 2;
 }
 
@@ -21,6 +22,17 @@ void game_init(Game *g) {
     init_players(g);
     init_peng(&g->peng);
     g->last = P2;
+}
+
+void draw_score(Score *s) {
+    char p1_score[10];
+    char p2_score[10];
+    int font_size = 50;
+    sprintf(p1_score, "%02d", s->p1);
+    sprintf(p2_score, "%02d", s->p2);
+
+    DrawText(p1_score, PLAYER_PADDING, 0, font_size, WHITE);
+    DrawText(p2_score, SCREEN_WIDTH - 2 * font_size, 0, font_size, WHITE);
 }
 
 void move_paddle(float *y, float delta, int direction) {
@@ -47,17 +59,17 @@ void game_movePeng(Game *g, float delta) {
     if (g->peng.pos.y < 0 || g->peng.pos.y + PENG_SIZE > SCREEN_HEIGHT) {
         g->peng.speed.y = g->peng.speed.y * - 1;
     }
-    // P1 score
+    // P2 score
     else if (g->peng.pos.x < 0) {
         init_peng(&g->peng);
         g->last = P2;
-        g->score.p1++;
+        g->score.p2++;
     }
-    // P2 score
+    // P1 score
     else if (g->peng.pos.x + PENG_SIZE > SCREEN_WIDTH) {
         init_peng(&g->peng);
         g->last = P2;
-        g->score.p2++;
+        g->score.p1++;
     }
     // P1 collision
     else if (g->peng.pos.x + (float)PENG_SIZE > g->p1.x && g->last == P2) {
@@ -110,6 +122,8 @@ void game_draw(Game *g) {
     ClearBackground(BLACK);
 
     draw_line();
+
+    draw_score(&g->score);
 
     DrawRectangle(g->p1.x, g->p1.y, PLAYER_WIDTH, PLAYER_HEIGHT, WHITE);
     DrawRectangle(g->p2.x, g->p2.y, PLAYER_WIDTH, PLAYER_HEIGHT, WHITE);

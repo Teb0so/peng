@@ -10,6 +10,7 @@
 
 #define PLAYER_WIDTH 20
 #define PLAYER_HEIGHT 100
+#define PLAYER_PADDING 40
 
 enum {
     P1,
