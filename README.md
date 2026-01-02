@@ -9,7 +9,9 @@ This is my first project using raylib, I did it to test and learn about the lib
 # Controls
 
 'J/K' - Move right paddle up/down
+
 'D/F' - Move left paddle up/down
+
 'SPACE' - Start/pause game
 
 # Building
