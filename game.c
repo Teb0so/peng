@@ -108,11 +108,11 @@ void game_inputhandler(Game *g, float delta) {
 
     if (!g->running) return;
 
-    if (IsKeyDown(KEY_I)) move_paddle(&g->p1.y, delta, -1);
-    if (IsKeyDown(KEY_U)) move_paddle(&g->p1.y, delta,  1);
+    if (IsKeyDown(KEY_K)) move_paddle(&g->p1.y, delta, -1);
+    if (IsKeyDown(KEY_J)) move_paddle(&g->p1.y, delta,  1);
 
-    if (IsKeyDown(KEY_E)) move_paddle(&g->p2.y, delta, -1);
-    if (IsKeyDown(KEY_R)) move_paddle(&g->p2.y, delta,  1);
+    if (IsKeyDown(KEY_D)) move_paddle(&g->p2.y, delta, -1);
+    if (IsKeyDown(KEY_F)) move_paddle(&g->p2.y, delta,  1);
 }
 
 void draw_peng(Peng *p) {

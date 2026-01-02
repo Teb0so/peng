@@ -5,6 +5,12 @@ This is my first project using raylib, I did it to test and learn about the lib
 
 ![](https://raw.githubusercontent.com/Teb0so/peng/refs/heads/main/art/peng.gif)
 
+# Controls
+
+'J/K' - Move right paddle up/down
+'D/F' - Move left paddle up/down
+'SPACE' - Start/pause game
+
 # Building
 
 1. Build raylib
