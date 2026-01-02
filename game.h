@@ -3,7 +3,7 @@
 #define PLAYER_SPEED 600.0f
 #define PENG_INIT_SPEED 200.0f
 
-#define PENG_SIZE 30
+#define PENG_SIZE 32
 
 #define SCREEN_WIDTH 800
 #define SCREEN_HEIGHT 450
@@ -26,6 +26,8 @@ typedef struct {
 typedef struct {
     Vector2 pos;
     Vector2 speed;
+    Texture2D texture;
+    int rotation;
 } Peng;
 
 typedef struct {

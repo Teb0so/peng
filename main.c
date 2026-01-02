@@ -17,8 +17,10 @@ int main(void) {
 
     SetTargetFPS(60);
 
+    g.peng.texture = LoadTexture("assets/peng.png");
     game_init(&g);
     main_loop(&g);
+    UnloadTexture(g.peng.texture);
 
     CloseWindow();
 

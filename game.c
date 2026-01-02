@@ -29,6 +29,8 @@ void init_peng(Peng *p, Score *s, int last) {
 
 void game_init(Game *g) {
     g->last = P2;
+    g->score.p1 = 0;
+    g->score.p2 = 0;
     init_players(g);
     init_peng(&g->peng, &g->score, g->last);
 }
@@ -40,8 +42,8 @@ void draw_score(Score *s) {
     sprintf(p1_score, "%02d", s->p1);
     sprintf(p2_score, "%02d", s->p2);
 
-    DrawText(p1_score, PLAYER_PADDING, 0, font_size, WHITE);
-    DrawText(p2_score, SCREEN_WIDTH - 2 * font_size, 0, font_size, WHITE);
+    DrawText(p1_score, PLAYER_PADDING, 0, font_size, BLACK);
+    DrawText(p2_score, SCREEN_WIDTH - 2 * font_size, 0, font_size, BLACK);
 }
 
 void move_paddle(float *y, float delta, int direction) {
@@ -61,6 +63,8 @@ void peng_colisionHandler(Peng *p) {
 }
 
 void game_movePeng(Game *g, float delta) {
+    g->peng.rotation += g->peng.speed.x / 100;
+
     g->peng.pos.x += g->peng.speed.x * delta;
     g->peng.pos.y += g->peng.speed.y * delta;
 
@@ -95,19 +99,21 @@ void game_movePeng(Game *g, float delta) {
 }
 
 void game_inputhandler(Game *g, float delta) {
-    if (IsKeyDown(KEY_K)) move_paddle(&g->p1.y, delta, -1);
-    if (IsKeyDown(KEY_J)) move_paddle(&g->p1.y, delta,  1);
+    if (IsKeyDown(KEY_I)) move_paddle(&g->p1.y, delta, -1);
+    if (IsKeyDown(KEY_U)) move_paddle(&g->p1.y, delta,  1);
 
-    if (IsKeyDown(KEY_D)) move_paddle(&g->p2.y, delta, -1);
-    if (IsKeyDown(KEY_F)) move_paddle(&g->p2.y, delta,  1);
+    if (IsKeyDown(KEY_E)) move_paddle(&g->p2.y, delta, -1);
+    if (IsKeyDown(KEY_R)) move_paddle(&g->p2.y, delta,  1);
 }
 
-void draw_peng(float *x, float *y) {
-    DrawRectangle(*x,
-                  *y,
-                  PENG_SIZE,
-                  PENG_SIZE,
-                  WHITE);
+void draw_peng(Peng *p) {
+    // DrawRectangle(p->pos.x, p->pos.y, PENG_SIZE, PENG_SIZE, LIME);
+
+    Rectangle sourceRec = { 0.0f, 0.0f, (float)p->texture.width, (float)p->texture.height};
+    Rectangle destRec = { p->pos.x + 16, p->pos.y + 16, PENG_SIZE, PENG_SIZE};
+    Vector2 origin = { (float)p->texture.width/2.0f, (float)p->texture.height / 2.0f};
+
+    DrawTexturePro(p->texture, sourceRec, destRec, origin, p->rotation, WHITE);
 }
 
 void draw_line(void) {
@@ -118,7 +124,7 @@ void draw_line(void) {
                       n,
                       SIZE,
                       SIZE,
-                      WHITE);
+                      BLACK);
         n += 2 * SIZE;
     }
 }
@@ -126,16 +132,16 @@ void draw_line(void) {
 void game_draw(Game *g) {
     BeginDrawing();
 
-    ClearBackground(BLACK);
+    ClearBackground(LIGHTGRAY);
 
     draw_line();
 
     draw_score(&g->score);
 
-    DrawRectangle(g->p1.x, g->p1.y, PLAYER_WIDTH, PLAYER_HEIGHT, WHITE);
-    DrawRectangle(g->p2.x, g->p2.y, PLAYER_WIDTH, PLAYER_HEIGHT, WHITE);
+    DrawRectangle(g->p1.x, g->p1.y, PLAYER_WIDTH, PLAYER_HEIGHT, BLACK);
+    DrawRectangle(g->p2.x, g->p2.y, PLAYER_WIDTH, PLAYER_HEIGHT, BLACK);
 
-    draw_peng(&g->peng.pos.x, &g->peng.pos.y);
+    draw_peng(&g->peng);
 
     EndDrawing();
 }
