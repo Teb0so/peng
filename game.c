@@ -28,6 +28,7 @@ void init_peng(Peng *p, Score *s, int last) {
 }
 
 void game_init(Game *g) {
+    g->running = false;
     g->last = P2;
     g->score.p1 = 0;
     g->score.p2 = 0;
@@ -63,42 +64,50 @@ void peng_colisionHandler(Peng *p) {
 }
 
 void game_movePeng(Game *g, float delta) {
-    g->peng.rotation += g->peng.speed.x / 100;
+    if (g->running) {
+        g->peng.rotation += g->peng.speed.x / 100;
 
-    g->peng.pos.x += g->peng.speed.x * delta;
-    g->peng.pos.y += g->peng.speed.y * delta;
+        g->peng.pos.x += g->peng.speed.x * delta;
+        g->peng.pos.y += g->peng.speed.y * delta;
 
-    // Top / bottom collision
-    if (g->peng.pos.y < 0 || g->peng.pos.y + PENG_SIZE > SCREEN_HEIGHT) {
-        g->peng.speed.y = g->peng.speed.y * - 1;
-    }
-    // P2 score
-    else if (g->peng.pos.x < 0) {
-        g->score.p2++;
-        init_peng(&g->peng, &g->score, g->last);
-    }
-    // P1 score
-    else if (g->peng.pos.x + PENG_SIZE > SCREEN_WIDTH) {
-        g->score.p1++;
-        init_peng(&g->peng, &g->score, g->last);
-    }
-    // P1 collision
-    else if (g->peng.pos.x + (float)PENG_SIZE > g->p1.x && g->last == P2) {
-        if (g->peng.pos.y + (float)PENG_SIZE > g->p1.y && g->peng.pos.y < g->p1.y + PLAYER_HEIGHT) {
-            g->last = P1;
-            peng_colisionHandler(&g->peng);
+        // Top / bottom collision
+        if (g->peng.pos.y < 0 || g->peng.pos.y + PENG_SIZE > SCREEN_HEIGHT) {
+            g->peng.speed.y = g->peng.speed.y * - 1;
         }
-    }
-    // P2 collision
-    else if (g->peng.pos.x - PLAYER_WIDTH < g->p2.x && g->last == P1) {
-        if (g->peng.pos.y + (float)PENG_SIZE > g->p2.y && g->peng.pos.y < g->p2.y + PLAYER_HEIGHT) {
-            g->last = P2;
-            peng_colisionHandler(&g->peng);
+        // P2 score
+        else if (g->peng.pos.x < 0) {
+            g->score.p2++;
+            init_peng(&g->peng, &g->score, g->last);
+        }
+        // P1 score
+        else if (g->peng.pos.x + PENG_SIZE > SCREEN_WIDTH) {
+            g->score.p1++;
+            init_peng(&g->peng, &g->score, g->last);
+        }
+        // P1 collision
+        else if (g->peng.pos.x + (float)PENG_SIZE > g->p1.x && g->last == P2) {
+            if (g->peng.pos.y + (float)PENG_SIZE > g->p1.y && g->peng.pos.y < g->p1.y + PLAYER_HEIGHT) {
+                g->last = P1;
+                peng_colisionHandler(&g->peng);
+            }
+        }
+        // P2 collision
+        else if (g->peng.pos.x - PLAYER_WIDTH < g->p2.x && g->last == P1) {
+            if (g->peng.pos.y + (float)PENG_SIZE > g->p2.y && g->peng.pos.y < g->p2.y + PLAYER_HEIGHT) {
+                g->last = P2;
+                peng_colisionHandler(&g->peng);
+            }
         }
     }
 }
 
 void game_inputhandler(Game *g, float delta) {
+    if (IsKeyPressed(KEY_SPACE)) {
+        g->running = !g->running;
+    }
+
+    if (!g->running) return;
+
     if (IsKeyDown(KEY_I)) move_paddle(&g->p1.y, delta, -1);
     if (IsKeyDown(KEY_U)) move_paddle(&g->p1.y, delta,  1);
 

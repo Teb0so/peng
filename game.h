@@ -36,6 +36,7 @@ typedef struct {
     Peng peng;
     Score score;
     int last;
+    bool running;
 } Game;
 
 extern void game_init(Game *g);
